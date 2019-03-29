@@ -1,0 +1,294 @@
+---
+title: Learning Genetic and Environmental Graphical Models using the R package FamilyBasedPGMs
+author: Adèle Helena Ribeiro
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::pdf_document: 
+    keep_tex: yes
+  word_document: default
+  html_document: default
+urlcolor: blue
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+First, load the package FamilyBasedPGMs:
+
+```{r}
+library(FamilyBasedPGMs)
+```
+
+## Preparing the Dataset
+
+Let's load the dataset containing the simulated data according to scenario 3:
+
+```{r}
+data(scen1)
+```
+
+
+This dataset contains 100 replicates of phenotypic data for 900 individuals (30 families, each with 30 individuals). 
+
+The pedigrees of the families and the number of individuals in each family are in the following objects:
+
+```{r}
+pedigrees <- scen1$pedigrees
+fam.nf <- scen1$fam.nf
+```
+
+
+The `pedigrees` object is a data.frame with the columns "famid", "id", "momid", "dadid", and "sex". The first entries for the fifth family are:
+
+```{r echo=FALSE, results = "asis"}
+stargazer::stargazer(head(subset(pedigrees, famid == 5)), summary=FALSE,
+                     title = "Pedigrees", header=FALSE, label="Pedigrees")
+```
+
+
+To plot the pedigree chart of the fifth simulated family, you can run the following code:
+ 
+```{r}
+plotFamilyPedigree(pedigrees, famid=5)
+```
+
+
+In this example, let's use the first replicate of the phenotypic data:
+
+```{r}
+phen.df <- scen1$phen.df[[1]]
+```
+
+
+The first rows of `phen.df` are shown in the following:
+
+```{r echo=FALSE, results = "asis"}
+stargazer::stargazer(head(phen.df), summary=FALSE, 
+                     title = "Phenotypes Dataset", header=FALSE,
+                     label="phen.df")
+```
+
+
+Also, since no covariates was used in this simulation, let's define the covariate dataset as NULL:
+
+```{r}
+covs.df <- NULL
+```
+
+
+## Learning Total, Genetic, and Environmental Undirected PGMs
+
+```{r echo=TRUE, cache=FALSE, results=FALSE, comment=FALSE, warning=FALSE}
+
+scenario = 1
+
+# Total number of individuals
+N <- sum(fam.nf) 
+
+fasterExample = TRUE
+
+# Data was simulated for all individuals, so all individuals were "sampled".
+sampled <- rep(1, N) 
+if (fasterExample) {
+  # If you prefer to run a faster example, you can try with a smaller part of the dataset
+  # However, it may compromise the accuracy of the recovered PGMs.
+  set.seed(12345)
+  sampled <- sample(c(TRUE, FALSE), 900, replace=TRUE)
+  phen.df <- phen.df[sampled,]
+}
+
+fileID <- paste0("scen", scenario)
+dirToSave <- paste0("./objects-UDG-", fileID, "/")
+dir.create(dirToSave, showWarnings=FALSE)
+
+alpha = 0.05
+
+udgs.out <- learnFamilyBasedUDGs(phen.df, covs.df, pedigrees, sampled, 
+                                 fileID, dirToSave, alpha, correction=NULL, 
+                                 max_cores=NULL, minK=10, maxFC = 0.05,
+                                 orthogonal=TRUE, useGPU=FALSE, debug=TRUE)
+```
+
+
+Now, we can check the learned undirected *total* PGM.
+
+Its adjacency matrix is:
+```{r}
+udgs.out$adjM$t
+```
+
+
+The estimates and p-values of the partial correlations are: 
+
+```{r}
+udgs.out$pCor$pCor_t
+```
+
+
+Plotting the learned PGM using its representation as an `igraph` object:
+
+```{r echo=TRUE, warning=FALSE}
+# igraph object
+udgs.out$udg$t
+
+plot(udgs.out$udg$t, vertex.size=30, 
+     vertex.color="lightblue")
+
+```
+
+
+Let's now check the learned undirected *genetic* PGM.
+
+Its adjacency matrix is:
+```{r}
+udgs.out$adjM$g
+```
+
+
+The estimates, p-values, and effective sizes of the partial correlations are: 
+
+```{r}
+udgs.out$pCor$pCor_g
+```
+
+Plotting the learned PGM using its representation as an `igraph` object:
+
+```{r echo=TRUE, warning=FALSE}
+# igraph object
+udgs.out$udg$g
+
+plot(udgs.out$udg$g, vertex.size=30, 
+     vertex.color="lightblue")
+```
+
+
+
+Finally, let's check the learned undirected *environmental* PGM.
+
+Its adjacency matrix is:
+```{r}
+udgs.out$adjM$e
+```
+
+
+The estimates, p-values, and effective sizes of the partial correlations are: 
+
+```{r}
+udgs.out$pCor$pCor_e
+```
+
+
+Plotting the learned PGM using its representation as an `igraph` object:
+
+```{r echo=TRUE, warning=FALSE}
+# igraph object
+udgs.out$udg$e
+
+plot(udgs.out$udg$e, vertex.size=30, 
+     vertex.color="lightblue")
+```
+
+
+
+## Learning Total, Genetic, and Environmental Directed Acyclic PGMs
+
+```{r echo=TRUE, cache=FALSE, results=FALSE, comment=FALSE, warning=FALSE}
+fileID <- paste0("scen", scenario)
+dirToSave <- paste0("./objects-PC-", fileID, "/")
+dir.create(dirToSave, showWarnings=FALSE)
+
+alpha = 0.05 # significance level
+
+dags <- learnFamilyBasedDAGs(phen.df, covs.df, pedigrees, sampled,
+   fileID, dirToSave, alpha, max_cores=NULL,
+   minK=10, maxFC = 0.05, orthogonal=TRUE, maj.rule=TRUE,
+   useGPU=FALSE, debug=TRUE, savePlots=FALSE)
+```
+
+
+
+Now, we can check the learned directed acyclic *total* PGM.
+
+Its adjacency matrix is:
+```{r}
+adjM_t <- as(dags$t, "amat")
+adjM_t 
+```
+
+
+Inspecting and plotting the learned PGM using its representation as an `igraph` object:
+
+```{r echo=TRUE, warning=FALSE}
+# igraph object
+dags$t
+
+pcalg::showEdgeList(dags$t)
+
+igraph::plot.igraph(igraph::graph.adjacency(adjM_t), 
+                    vertex.size=30, vertex.color="lightblue")
+```
+
+
+Let's now check the learned directed acyclic *genetic* PGM.
+
+Its adjacency matrix is:
+```{r}
+adjM_g <- as(dags$g, "amat")
+adjM_g 
+```
+
+Inspecting and plotting the learned PGM using its representation as an `igraph` object:
+
+```{r echo=TRUE, warning=FALSE}
+# igraph object
+dags$g
+
+pcalg::showEdgeList(dags$g)
+
+igraph::plot.igraph(igraph::graph.adjacency(adjM_g), 
+                    vertex.size=30, vertex.color="lightblue")
+```
+
+
+
+Finally, let's check the learned directed acyclic *environmental* PGM.
+
+Its adjacency matrix is:
+```{r}
+adjM_e <- as(dags$e, "amat")
+adjM_e 
+```
+
+
+Inspecting and plotting the learned PGM using its representation as an `igraph` object:
+
+```{r echo=TRUE, warning=FALSE}
+# igraph object
+dags$e
+
+pcalg::showEdgeList(dags$e)
+
+igraph::plot.igraph(igraph::graph.adjacency(adjM_e),
+                    vertex.size=30, vertex.color="lightblue")
+```
+
+
+The results of the partial correlation tests are saved at `paste0(dirToSave, fileID, "_preprPvalues.csv")`:
+
+```{r echo=TRUE, results = "asis"}
+stargazer::stargazer(round(read.table(
+  paste0(dirToSave, fileID, "_preprPvalues.csv"), header=TRUE, sep=";"),
+  3), summary=FALSE, title = "Partial Correlation Results", header=FALSE,
+  column.sep.width = "-5pt", label="PCpcor")
+```
+
+
