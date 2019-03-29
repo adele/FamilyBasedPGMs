@@ -17,7 +17,7 @@ An example is provided at https://github.com/adele/FamilyBasedPGMs/blob/master/v
 
 ### Installation
 
-You can download the latest tar.gz file with the source code of the FamilyBasedPGM R package, available at https://github.com/adele/FamilyBasedPGM/releases/latest, and install it with the following command, where `path_to_file` represents the full path and file name of the tar.gz file:
+You can download the latest tar.gz file with the source code of the FamilyBasedPGMs R package, available at https://github.com/adele/FamilyBasedPGMs/releases/latest, and install it with the following command, where `path_to_file` represents the full path and file name of the tar.gz file:
 ```r
 install.packages(path_to_file, repos=NULL, type="source", dependencies=TRUE)
 ```
@@ -26,11 +26,11 @@ Or install the development version directly from GitHub. Make sure you have the 
 If not, install it with `install.packages("devtools")`.
 
 ```r
-devtools::install_github("adele/FamilyBasedPGM", dependencies=TRUE)
+devtools::install_github("adele/FamilyBasedPGMs", dependencies=TRUE)
 ```
 Note: if you are asked to update packages, then press "a" for all.
 
-All releases are available at https://github.com/adele/FamilyBasedPGM/releases. If you want a specific version of the FamilyBasedPGM R package, for example, v1.0, you can install it directly from the URL:
+All releases are available at https://github.com/adele/FamilyBasedPGMs/releases. If you want a specific version of the FamilyBasedPGMs R package, for example, v1.0, you can install it directly from the URL:
 ```r
 install.packages("https://github.com/adele/FamilyBasedPGMs/releases/download/v1.0/FamilyBasedPGMs_1.0.tar.gz", repos=NULL, method="libcurl", dependencies=TRUE)
 ```
