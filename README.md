@@ -2,9 +2,12 @@
 
 ### Overview
 
-This package provides methods for learning, from observational Gaussian family data (i.e., Gaussian data clusterized in families), undirected and directed acyclic PGMs describing linear relationships among multiple phenotypes and a decomposition of the learned PGM into unconfounded genetic and environmental PGMs. 
+This package provides methods for learning, from observational Gaussian family data (i.e., Gaussian data clusterized in families), Gaussian undirected and directed acyclic PGMs describing linear relationships among multiple phenotypes and a decomposition of the learned PGM into unconfounded genetic and environmental PGMs. 
 
-Partial correlation tests for total, genetic, and environmental components are based on univariate polygenic linear mixed models. In the learning process, these tests are used as separation oracles that answer whether a conditional independence relation holds or not in the total, genetic, and environmental components. Particularly, for causal structure learning (learning of the structure of directed acyclic PGMs), these partial correlation tests are used as d-separation oracles in the IC/PC algorithm. 
+The structure learning is based on zero partial correlation tests, derived in the work by Ribeiro and Soler, entitled 
+"Learning Genetic and Environmental Graphical Models from Family Data" (submitted for publication). These tests are based on univariate polygenic linear mixed, with two components of variance: the polygenic or family-specific random effect, which models the phenotypic variability across the families, and the environmental or subject-specific error, which models phenotypic variability after removing the familial aggregation effect.
+
+Particularly, for causal structure learning (learning of the structure of directed acyclic PGMs), these partial correlation tests are used as d-separation oracles in the IC/PC algorithm. 
 
 ### Reference Manual
 
