@@ -33,7 +33,7 @@ install.packages(path_to_file, repos=NULL, type="source", dependencies=TRUE)
 ```
 
 Or you can install the development version directly from GitHub. Make sure you have the devtools R package installed. 
-If not, install it with `install.packages("devtools")`.
+If not, install it with `install.packages("devtools", dependencies=TRUE)`.
 
 ```r
 devtools::install_github("adele/FamilyBasedPGMs", dependencies=TRUE)
