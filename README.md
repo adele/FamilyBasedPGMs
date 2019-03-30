@@ -50,7 +50,7 @@ install.packages("https://github.com/adele/FamilyBasedPGMs/releases/download/v1.
 If any of the following packages is missing, simply install the missing package(s) from the repository of your Linux distribution:
 
 ```console
-sudo apt-get install libgmp10 libgmp-dev libatlas3-base libv8-dev libcurl4-openssl-dev
+sudo apt-get install libgmp10 libgmp-dev libatlas3-base libv8-dev libcurl4-openssl-dev libmagick++-dev
 ```
 
 If you are getting an error when loading the shared library libgfortran.so.4, then you may need to install GCC 7 including the Fortran part, that includes libgfortran 4. See [here](https://stackoverflow.com/questions/46516394/how-to-install-libgfortran-so-4-on-ubuntu-16-06) for instructions.
