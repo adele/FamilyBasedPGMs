@@ -117,3 +117,8 @@ plot(udgs.out$udg$e, vertex.size=30, vertex.color="lightblue")
 }
 
 }
+\references{
+{
+   \insertAllCited
+}
+}

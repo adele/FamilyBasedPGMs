@@ -21,8 +21,8 @@ in \insertCite{ribeiro2019family}{FamilyBasedPGMs}.
 }
 \details{
 In this scenario, the DAG of the total and environmental components is the unshielded collider
-\eqn{X \rightarrow Z \leftarrow Y}. However, the edge \eqn{X \rightarrow Z} is absent in the genetic PGM,
-i.e., the genetic PGM has only the edge \eqn{Z \leftarrow Y}.
+\eqn{X \rightarrow Z \leftarrow Y}{X -> Z <- Y}. However, the edge \eqn{X \rightarrow Z}{X -> Z} is absent in the genetic PGM,
+i.e., the genetic PGM has only the edge \eqn{Z \leftarrow Y}{Z <- Y}.
 
 It was simulated pedigrees for 30 families, each with 30 individuals (N = 900).
 

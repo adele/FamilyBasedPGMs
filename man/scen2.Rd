@@ -21,7 +21,7 @@ in \insertCite{ribeiro2019family}{FamilyBasedPGMs}.
 }
 \details{
 In this scenario, the true DAG in the total, genetic, and environmental components is
-the fork \eqn{Y \leftarrow X \rightarrow Z} and its moral graph is exactly its undirected version.
+the fork \eqn{Y \leftarrow X \rightarrow Z}{Y <- X -> Z} and its moral graph is exactly its undirected version.
 
 It was simulated pedigrees for 30 families, each with 30 individuals (N = 900).
 

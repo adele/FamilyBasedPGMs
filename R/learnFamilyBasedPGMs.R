@@ -91,6 +91,10 @@
 #' plot(udgs.out$udg$e, vertex.size=30, vertex.color="lightblue")
 #' }
 #'
+#' @references{
+#'    \insertAllCited
+#' }
+#'
 #' @importFrom Rdpack reprompt
 #'
 #' @export learnFamilyBasedUDGs
@@ -201,6 +205,11 @@ learnFamilyBasedUDGs <- function(phen.df, covs.df, pedigrees, sampled, fileID, d
 #' plot.igraph(graph.adjacency(adjM_e), vertex.size=30, vertex.color="lightblue")
 #' }
 #'
+#' @references{
+#'    \insertAllCited
+#' }
+#'
+#' @importFrom Rdpack reprompt
 #' @importFrom doMC registerDoMC
 #' @import foreach
 #'
@@ -238,7 +247,8 @@ learnFamilyBasedDAGs <- function(phen.df, covs.df, pedigrees, sampled, fileID, d
 #' @title Conditional Independence Test for Family Data
 #'
 #' @description Computes the p-value of the test of the null hypothesis of zero genetic, environmental,
-#' or total partial correlation between X and Y given S, if dagg, dage, or dagt is set as TRUE, respectively.
+#' or total partial correlation between X and Y given S, if \code{dagg}, \code{dage}, or \code{dagt}
+#' is set as TRUE, respectively.
 #'
 #' The unconfounded estimation and significance test for the genetic and environmental partial correlation
 #' coefficients are described in detail in \insertCite{ribeiro2019family;textual}{FamilyBasedPGMs}.
@@ -255,14 +265,21 @@ learnFamilyBasedDAGs <- function(phen.df, covs.df, pedigrees, sampled, fileID, d
 #' @param y An integer value  indicating the position of variable Y.
 #' @param S An integer vector with the positions of zero or more conditioning variables in S.
 #' @param suffStat A list with the elements "phen.df", "covs.df", "pedigrees",
-#' "minK", "maxFC", "orthogonal", "alpha", "dirToSave", "fileID", "savePlots", and
-#' "useGPU", as described in function \code{learnFamilyBasedDAGs}, and also with the
-#' elements "Phi2" and "Z", both obtained by the function
-#' \code{calculateBlockDiagonal2PhiMatrix} with the argument "squaredRoot" set,
+#' "minK", "maxFC", "orthogonal", "alpha", "dirToSave", "fileID",
+#' "savePlots", and "useGPU", as described in function
+#' \code{\link{learnFamilyBasedDAGs}}, "dagg", "dage", "dagt", to specify whether the
+#' genetic, environmental, or total conditional independence test should be conducted,
+#' and also "Phi2" and "Z", both obtained by the function
+#' \code{\link{calculateBlockDiagonal2PhiMatrix}} with the argument "squaredRoot" set,
 #' respectively, as FALSE and TRUE.
 #'
 #' @return The p-value of the test.
 #'
+#' @references{
+#'    \insertAllCited
+#' }
+#'
+#' @importFrom Rdpack reprompt
 #' @importFrom utils write.table
 #'
 #'@export familyBasedCITest
@@ -313,6 +330,12 @@ familyBasedCITest <- function(x, y, S, suffStat) {
 #' @param sampled A logical vector in which element i indicates whether individual i was sampled or not.
 #'
 #' @return The kinship matrix \eqn{2 \bm\Phi} or its squared root, if squaredRoot is TRUE.
+#'
+#' @references{
+#'    \insertAllCited
+#' }
+#'
+#' @importFrom Rdpack reprompt
 #'
 #' @export calculateBlockDiagonal2PhiMatrix
 calculateBlockDiagonal2PhiMatrix <- function(ped, squaredRoot=FALSE, sampled=NULL) {

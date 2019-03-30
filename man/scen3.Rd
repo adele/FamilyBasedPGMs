@@ -21,8 +21,8 @@ in \insertCite{ribeiro2019family}{FamilyBasedPGMs}.
 }
 \details{
 In this scenario, the true DAG in the total, genetic, and environmental components is
-\eqn{Z \leftarrow X \rightarrow Y \rightarrow Z} and its moral graph is complete.
-However, data for the total DAG may be unfaithful, since \eqn{\rho_{X,Y|Z}} is almost zero.
+\eqn{Z \leftarrow X \rightarrow Y \rightarrow Z}{Z <- X -> Y -> Z}  and its moral graph is complete.
+However, data for the total DAG may be unfaithful, since \eqn{\rho_{X,Y|Z}}{rho_XY|Z} is almost zero.
 
 It was simulated pedigrees for 30 families, each with 30 individuals (N = 900).
 

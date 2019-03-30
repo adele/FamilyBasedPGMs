@@ -21,7 +21,7 @@ in \insertCite{ribeiro2019family}{FamilyBasedPGMs}.
 }
 \details{
 In this scenario, the true DAG in the total, genetic, and environmental components is
-the unshielded collider \eqn{X \rightarrow Z \leftarrow Y} and its moral graph is complete.
+the unshielded collider \eqn{X \rightarrow Z \leftarrow Y}{X -> Z <- Y} and its moral graph is complete.
 
 It was simulated pedigrees for 30 families, each with 30 individuals (N = 900).
 

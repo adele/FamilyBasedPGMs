@@ -108,3 +108,8 @@ plot.igraph(graph.adjacency(adjM_e), vertex.size=30, vertex.color="lightblue")
 }
 
 }
+\references{
+{
+   \insertAllCited
+}
+}

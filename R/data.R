@@ -4,7 +4,7 @@
 #' in \insertCite{ribeiro2019family}{FamilyBasedPGMs}.
 #'
 #' In this scenario, the true DAG in the total, genetic, and environmental components is
-#' the unshielded collider \eqn{X \rightarrow Z \leftarrow Y} and its moral graph is complete.
+#' the unshielded collider \eqn{X \rightarrow Z \leftarrow Y}{X -> Z <- Y} and its moral graph is complete.
 #'
 #' It was simulated pedigrees for 30 families, each with 30 individuals (N = 900).
 #'
@@ -34,7 +34,7 @@
 #' in \insertCite{ribeiro2019family}{FamilyBasedPGMs}.
 #'
 #' In this scenario, the true DAG in the total, genetic, and environmental components is
-#' the fork \eqn{Y \leftarrow X \rightarrow Z} and its moral graph is exactly its undirected version.
+#' the fork \eqn{Y \leftarrow X \rightarrow Z}{Y <- X -> Z} and its moral graph is exactly its undirected version.
 #'
 #' It was simulated pedigrees for 30 families, each with 30 individuals (N = 900).
 #'
@@ -64,8 +64,8 @@
 #' in \insertCite{ribeiro2019family}{FamilyBasedPGMs}.
 #'
 #' In this scenario, the true DAG in the total, genetic, and environmental components is
-#' \eqn{Z \leftarrow X \rightarrow Y \rightarrow Z} and its moral graph is complete.
-#' However, data for the total DAG may be unfaithful, since \eqn{\rho_{X,Y|Z}} is almost zero.
+#' \eqn{Z \leftarrow X \rightarrow Y \rightarrow Z}{Z <- X -> Y -> Z}  and its moral graph is complete.
+#' However, data for the total DAG may be unfaithful, since \eqn{\rho_{X,Y|Z}}{rho_XY|Z} is almost zero.
 #'
 #' It was simulated pedigrees for 30 families, each with 30 individuals (N = 900).
 #'
@@ -95,8 +95,8 @@
 #' in \insertCite{ribeiro2019family}{FamilyBasedPGMs}.
 #'
 #' In this scenario, the DAG of the total and environmental components is the unshielded collider
-#' \eqn{X \rightarrow Z \leftarrow Y}. However, the edge \eqn{X \rightarrow Z} is absent in the genetic PGM,
-#' i.e., the genetic PGM has only the edge \eqn{Z \leftarrow Y}.
+#' \eqn{X \rightarrow Z \leftarrow Y}{X -> Z <- Y}. However, the edge \eqn{X \rightarrow Z}{X -> Z} is absent in the genetic PGM,
+#' i.e., the genetic PGM has only the edge \eqn{Z \leftarrow Y}{Z <- Y}.
 #'
 #' It was simulated pedigrees for 30 families, each with 30 individuals (N = 900).
 #'

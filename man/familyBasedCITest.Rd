@@ -14,10 +14,12 @@ familyBasedCITest(x, y, S, suffStat)
 \item{S}{An integer vector with the positions of zero or more conditioning variables in S.}
 
 \item{suffStat}{A list with the elements "phen.df", "covs.df", "pedigrees",
-"minK", "maxFC", "orthogonal", "alpha", "dirToSave", "fileID", "savePlots", and
-"useGPU", as described in function \code{learnFamilyBasedDAGs}, and also with the
-elements "Phi2" and "Z", both obtained by the function
-\code{calculateBlockDiagonal2PhiMatrix} with the argument "squaredRoot" set,
+"minK", "maxFC", "orthogonal", "alpha", "dirToSave", "fileID",
+"savePlots", and "useGPU", as described in function
+\code{\link{learnFamilyBasedDAGs}}, "dagg", "dage", "dagt", to specify whether the
+genetic, environmental, or total conditional independence test should be conducted,
+and also "Phi2" and "Z", both obtained by the function
+\code{\link{calculateBlockDiagonal2PhiMatrix}} with the argument "squaredRoot" set,
 respectively, as FALSE and TRUE.}
 }
 \value{
@@ -25,7 +27,8 @@ The p-value of the test.
 }
 \description{
 Computes the p-value of the test of the null hypothesis of zero genetic, environmental,
-or total partial correlation between X and Y given S, if dagg, dage, or dagt is set as TRUE, respectively.
+or total partial correlation between X and Y given S, if \code{dagg}, \code{dage}, or \code{dagt}
+is set as TRUE, respectively.
 
 The unconfounded estimation and significance test for the genetic and environmental partial correlation
 coefficients are described in detail in \insertCite{ribeiro2019family;textual}{FamilyBasedPGMs}.
@@ -37,4 +40,9 @@ familial aggregation effect.
 
 This function can be used as a d-separation oracle in causal structure learning algorithms such as the
 IC/PC algorithm when the variables are normal distributed and the observations are clusterized in families.
+}
+\references{
+{
+   \insertAllCited
+}
 }

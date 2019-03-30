@@ -31,3 +31,8 @@ Thus, when the pedigree structure is known, \eqn{\Phi^{(f)}_{ii} = 1/2},
 \eqn{\Phi^{(f)}_{ij} = 1/8} if one of them is a grand-parent of the other, and so on
 \insertCite{lange2003mathematical}{FamilyBasedPGMs}.
 }
+\references{
+{
+   \insertAllCited
+}
+}
