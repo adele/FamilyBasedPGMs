@@ -171,7 +171,7 @@ for the fifth family are:
 
 \begin{table}[!htbp] \centering 
   \caption{Pedigrees} 
-  \label{} 
+  \label{Pedigrees} 
 \begin{tabular}{@{\extracolsep{5pt}} cccccc} 
 \\[-1.8ex]\hline 
 \hline \\[-1.8ex] 
@@ -214,7 +214,7 @@ The first rows of \texttt{phen.df} are shown in the following:
 
 \begin{table}[!htbp] \centering 
   \caption{Phenotypes Dataset} 
-  \label{} 
+  \label{phen.df} 
 \begin{tabular}{@{\extracolsep{5pt}} cccc} 
 \\[-1.8ex]\hline 
 \hline \\[-1.8ex] 
@@ -250,14 +250,18 @@ PGMs}\label{learning-total-genetic-and-environmental-undirected-pgms}
 \CommentTok{# Total number of individuals}
 \NormalTok{N <-}\StringTok{ }\KeywordTok{sum}\NormalTok{(fam.nf) }
 
-\CommentTok{# Here we are assuming that all individuals were sampled.}
-\CommentTok{# Thus, the vector sampled is N-dimensional vector with all entries equal to 1.}
-\CommentTok{# sampled <- rep(1, N) }
+\NormalTok{fasterExample =}\StringTok{ }\OtherTok{TRUE}
 
-\KeywordTok{set.seed}\NormalTok{(}\DecValTok{12345}\NormalTok{)}
-\NormalTok{sampled <-}\StringTok{ }\KeywordTok{sample}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\OtherTok{TRUE}\NormalTok{, }\OtherTok{FALSE}\NormalTok{), }\DecValTok{900}\NormalTok{, }\DataTypeTok{replace=}\OtherTok{TRUE}\NormalTok{)}
-\NormalTok{phen.df <-}\StringTok{ }\NormalTok{phen.df[sampled,]}
- 
+\CommentTok{# Data was simulated for all individuals, so all individuals were "sampled".}
+\NormalTok{sampled <-}\StringTok{ }\KeywordTok{rep}\NormalTok{(}\DecValTok{1}\NormalTok{, N) }
+\ControlFlowTok{if}\NormalTok{ (fasterExample) \{}
+  \CommentTok{# If you prefer to run a faster example, you can try with a smaller part of the dataset}
+  \CommentTok{# However, it may compromise the accuracy of the recovered PGMs.}
+  \KeywordTok{set.seed}\NormalTok{(}\DecValTok{12345}\NormalTok{)}
+\NormalTok{  sampled <-}\StringTok{ }\KeywordTok{sample}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\OtherTok{TRUE}\NormalTok{, }\OtherTok{FALSE}\NormalTok{), }\DecValTok{900}\NormalTok{, }\DataTypeTok{replace=}\OtherTok{TRUE}\NormalTok{)}
+\NormalTok{  phen.df <-}\StringTok{ }\NormalTok{phen.df[sampled,]}
+\NormalTok{\}}
+
 \NormalTok{fileID <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(}\StringTok{"scen"}\NormalTok{, scenario)}
 \NormalTok{dirToSave <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(}\StringTok{"./objects-UDG-"}\NormalTok{, fileID, }\StringTok{"/"}\NormalTok{)}
 \KeywordTok{dir.create}\NormalTok{(dirToSave, }\DataTypeTok{showWarnings=}\OtherTok{FALSE}\NormalTok{)}
@@ -311,9 +315,9 @@ object:
 \begin{Highlighting}[]
 \CommentTok{# igraph object}
 \NormalTok{udgs.out}\OperatorTok{$}\NormalTok{udg}\OperatorTok{$}\NormalTok{t}
-\CommentTok{#> IGRAPH 4dcdbfb UN-- 3 3 -- }
+\CommentTok{#> IGRAPH 9468813 UN-- 3 3 -- }
 \CommentTok{#> + attr: name (v/c)}
-\CommentTok{#> + edges from 4dcdbfb (vertex names):}
+\CommentTok{#> + edges from 9468813 (vertex names):}
 \CommentTok{#> [1] X--Y X--Z Y--Z}
 
 \KeywordTok{plot}\NormalTok{(udgs.out}\OperatorTok{$}\NormalTok{udg}\OperatorTok{$}\NormalTok{t, }\DataTypeTok{vertex.size=}\DecValTok{30}\NormalTok{, }
@@ -370,9 +374,9 @@ object:
 \begin{Highlighting}[]
 \CommentTok{# igraph object}
 \NormalTok{udgs.out}\OperatorTok{$}\NormalTok{udg}\OperatorTok{$}\NormalTok{g}
-\CommentTok{#> IGRAPH c163ddf UN-- 3 3 -- }
+\CommentTok{#> IGRAPH 6bbe0a4 UN-- 3 3 -- }
 \CommentTok{#> + attr: name (v/c)}
-\CommentTok{#> + edges from c163ddf (vertex names):}
+\CommentTok{#> + edges from 6bbe0a4 (vertex names):}
 \CommentTok{#> [1] X--Y X--Z Y--Z}
 
 \KeywordTok{plot}\NormalTok{(udgs.out}\OperatorTok{$}\NormalTok{udg}\OperatorTok{$}\NormalTok{g, }\DataTypeTok{vertex.size=}\DecValTok{30}\NormalTok{, }
@@ -429,9 +433,9 @@ object:
 \begin{Highlighting}[]
 \CommentTok{# igraph object}
 \NormalTok{udgs.out}\OperatorTok{$}\NormalTok{udg}\OperatorTok{$}\NormalTok{e}
-\CommentTok{#> IGRAPH cc8dd2a UN-- 3 3 -- }
+\CommentTok{#> IGRAPH 1aeada3 UN-- 3 3 -- }
 \CommentTok{#> + attr: name (v/c)}
-\CommentTok{#> + edges from cc8dd2a (vertex names):}
+\CommentTok{#> + edges from 1aeada3 (vertex names):}
 \CommentTok{#> [1] X--Y X--Z Y--Z}
 
 \KeywordTok{plot}\NormalTok{(udgs.out}\OperatorTok{$}\NormalTok{udg}\OperatorTok{$}\NormalTok{e, }\DataTypeTok{vertex.size=}\DecValTok{30}\NormalTok{, }
@@ -548,7 +552,8 @@ Inspecting and plotting the learned PGM using its representation as an
 \CommentTok{#>   X_g  -->  Z_g }
 \CommentTok{#>   Y_g  -->  Z_g}
 
-\NormalTok{igraph}\OperatorTok{::}\KeywordTok{plot.igraph}\NormalTok{(igraph}\OperatorTok{::}\KeywordTok{graph.adjacency}\NormalTok{(adjM_g), }\DataTypeTok{vertex.size=}\DecValTok{30}\NormalTok{, }\DataTypeTok{vertex.color=}\StringTok{"lightblue"}\NormalTok{)}
+\NormalTok{igraph}\OperatorTok{::}\KeywordTok{plot.igraph}\NormalTok{(igraph}\OperatorTok{::}\KeywordTok{graph.adjacency}\NormalTok{(adjM_g), }
+                    \DataTypeTok{vertex.size=}\DecValTok{30}\NormalTok{, }\DataTypeTok{vertex.color=}\StringTok{"lightblue"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -596,11 +601,48 @@ Inspecting and plotting the learned PGM using its representation as an
 \CommentTok{#>   X_e  -->  Z_e }
 \CommentTok{#>   Y_e  -->  Z_e}
 
-\NormalTok{igraph}\OperatorTok{::}\KeywordTok{plot.igraph}\NormalTok{(igraph}\OperatorTok{::}\KeywordTok{graph.adjacency}\NormalTok{(adjM_e), }\DataTypeTok{vertex.size=}\DecValTok{30}\NormalTok{, }\DataTypeTok{vertex.color=}\StringTok{"lightblue"}\NormalTok{)}
+\NormalTok{igraph}\OperatorTok{::}\KeywordTok{plot.igraph}\NormalTok{(igraph}\OperatorTok{::}\KeywordTok{graph.adjacency}\NormalTok{(adjM_e),}
+                    \DataTypeTok{vertex.size=}\DecValTok{30}\NormalTok{, }\DataTypeTok{vertex.color=}\StringTok{"lightblue"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
 \includegraphics{familybasedpgms-example_files/figure-latex/unnamed-chunk-25-1.pdf}
+
+The results of the partial correlation tests are saved at
+\texttt{paste0(dirToSave,\ fileID,\ "\_preprPvalues.csv")}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{stargazer}\OperatorTok{::}\KeywordTok{stargazer}\NormalTok{(}\KeywordTok{round}\NormalTok{(}\KeywordTok{read.table}\NormalTok{(}
+  \KeywordTok{paste0}\NormalTok{(dirToSave, fileID, }\StringTok{"_preprPvalues.csv"}\NormalTok{), }\DataTypeTok{header=}\OtherTok{TRUE}\NormalTok{, }\DataTypeTok{sep=}\StringTok{";"}\NormalTok{),}
+  \DecValTok{3}\NormalTok{), }\DataTypeTok{summary=}\OtherTok{FALSE}\NormalTok{, }\DataTypeTok{title =} \StringTok{"Partial Correlation Results"}\NormalTok{, }\DataTypeTok{header=}\OtherTok{FALSE}\NormalTok{,}
+  \DataTypeTok{column.sep.width =} \StringTok{"-5pt"}\NormalTok{, }\DataTypeTok{label=}\StringTok{"PCpcor"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}[!htbp] \centering 
+  \caption{Partial Correlation Results} 
+  \label{PCpcor} 
+\begin{tabular}{@{\extracolsep{-5pt}} cccccccccccc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & x & y & S & pcort & pcort\_p.value & pcorg & pcorg\_p.value & pcore & pcore\_p.value & se & sg \\ 
+\hline \\[-1.8ex] 
+1 & $1$ & $2$ & $$ & $0.094$ & $0.055$ & $0$ & $0.998$ & $0$ & $0.999$ & $18$ & $22$ \\ 
+2 & $1$ & $3$ & $$ & $0.571$ & $0$ & $0.627$ & $0$ & $0.461$ & $0.004$ & $38$ & $82$ \\ 
+3 & $2$ & $3$ & $$ & $0.676$ & $0$ & $0.602$ & $0$ & $0.737$ & $0$ & $68$ & $62$ \\ 
+4 & $2$ & $1$ & $$ & $0.094$ & $0.055$ & $0$ & $0.998$ & $0$ & $0.999$ & $18$ & $22$ \\ 
+5 & $3$ & $1$ & $$ & $0.571$ & $0$ & $0.627$ & $0$ & $0.461$ & $0.004$ & $38$ & $82$ \\ 
+6 & $3$ & $2$ & $$ & $0.676$ & $0$ & $0.602$ & $0$ & $0.737$ & $0$ & $68$ & $62$ \\ 
+7 & $1$ & $2$ & $3$ & $$-$0.484$ & $0$ & $$-$0.550$ & $0$ & $$-$0.476$ & $0.001$ & $42$ & $68$ \\ 
+8 & $1$ & $3$ & $2$ & $0.691$ & $0$ & $0.732$ & $0$ & $0.633$ & $0$ & $38$ & $109$ \\ 
+9 & $2$ & $3$ & $1$ & $0.762$ & $0$ & $0.743$ & $0$ & $0.790$ & $0$ & $82$ & $62$ \\ 
+10 & $2$ & $1$ & $3$ & $$-$0.484$ & $0$ & $$-$0.550$ & $0$ & $$-$0.476$ & $0.001$ & $42$ & $68$ \\ 
+11 & $3$ & $1$ & $2$ & $0.691$ & $0$ & $0.732$ & $0$ & $0.633$ & $0$ & $38$ & $109$ \\ 
+12 & $3$ & $2$ & $1$ & $0.762$ & $0$ & $0.743$ & $0$ & $0.790$ & $0$ & $82$ & $62$ \\ 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table}
 
 
 \end{document}
