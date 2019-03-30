@@ -20,12 +20,19 @@ An example is provided at https://github.com/adele/FamilyBasedPGMs/blob/master/v
 
 ### Installation
 
+First, install the following R packages:
+```r
+install.packages(c("curl", "pcalg"), dependencies=TRUE)
+```
+
+Then, proceed with the installation of the FamilyBasedPGMs R package. 
+
 You can download the latest tar.gz file with the source code of the FamilyBasedPGMs R package, available at https://github.com/adele/FamilyBasedPGMs/releases/latest, and install it with the following command, where `path_to_file` represents the full path and file name of the tar.gz file:
 ```r
 install.packages(path_to_file, repos=NULL, type="source", dependencies=TRUE)
 ```
 
-Or install the development version directly from GitHub. Make sure you have the devtools R package installed. 
+Or you can install the development version directly from GitHub. Make sure you have the devtools R package installed. 
 If not, install it with `install.packages("devtools")`.
 
 ```r
@@ -46,7 +53,7 @@ If any of the following packages is missing, simply install the missing package(
 sudo apt-get install libgmp10 libgmp-dev libatlas3-base libv8-dev libcurl4-openssl-dev
 ```
 
-If you get an error when loading the shared library libgfortran.so.4, then you may need to install GCC 7 including the Fortran part, that includes libgfortran 4. See [here](https://stackoverflow.com/questions/46516394/how-to-install-libgfortran-so-4-on-ubuntu-16-06) for instructions.
+If you are getting an error when loading the shared library libgfortran.so.4, then you may need to install GCC 7 including the Fortran part, that includes libgfortran 4. See [here](https://stackoverflow.com/questions/46516394/how-to-install-libgfortran-so-4-on-ubuntu-16-06) for instructions.
 
 ```console
 sudo add-apt-repository ppa:jonathonf/gcc-7.1
