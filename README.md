@@ -37,3 +37,20 @@ All releases are available at https://github.com/adele/FamilyBasedPGMs/releases.
 ```r
 install.packages("https://github.com/adele/FamilyBasedPGMs/releases/download/v1.0/FamilyBasedPGMs_1.0.tar.gz", repos=NULL, method="libcurl", dependencies=TRUE)
 ```
+
+### Installation Trobleshooting on Debian and Ubuntu
+
+If any of the following packages is missing, simply install the missing package(s) from the repository of your Linux distribution:
+
+```console
+sudo apt-get install libgmp10 libgmp-dev libatlas3-base libv8-dev libcurl4-openssl-dev
+```
+
+If you get an error when loading the shared library libgfortran.so.4, then you may need to install GCC 7 including the Fortran part, that includes libgfortran 4. See [here](https://stackoverflow.com/questions/46516394/how-to-install-libgfortran-so-4-on-ubuntu-16-06) for instructions.
+
+```console
+sudo add-apt-repository ppa:jonathonf/gcc-7.1
+sudo apt-get update
+
+sudo apt-get install gcc-7 g++-7 gfortran-7
+```
