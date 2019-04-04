@@ -1,4 +1,4 @@
-## FamilyBasedPGMs R Package: Methods for Learning Genetic and Environmental Graphical Models from Family Data
+## FamilyBasedPGMs: An R Package for Learning Genetic and Environmental Graphical Models from Family Data
 
 ### Overview
 
