@@ -7,7 +7,9 @@ This package provides methods for learning, from observational Gaussian family d
 The structure learning is based on zero partial correlation tests, derived in the work by Ribeiro and Soler, entitled 
 "Learning Genetic and Environmental Graphical Models from Family Data" (submitted for publication). These tests are based on univariate polygenic linear mixed, with two components of variance: the polygenic or family-specific random effect, which models the phenotypic variability across the families, and the environmental or subject-specific error, which models phenotypic variability after removing the familial aggregation effect.
 
-Particularly, for causal structure learning (learning of the structure of directed acyclic PGMs), these partial correlation tests are used as d-separation oracles in the IC/PC algorithm. 
+Particularly, for causal structure learning (learning of the structure of directed acyclic PGMs), these partial correlation tests are used as d-separation oracles in the IC/PC algorithm.
+
+**Keywords:** Structure learning; Causal inference; Covariance matrix decomposition; Polygenic mixed model; Zero partial correlation test; Confounded residuals.
 
 ### Reference Manual
 
