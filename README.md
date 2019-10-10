@@ -31,6 +31,7 @@ BiocManager::install()
 BiocManager::install(c("graph", "RBGL", "Rgraphviz"))
 
 install.packages(c("stringi", "curl", "pcalg"), dependencies=TRUE)
+install.packages(c('doMC', 'foreach', 'coxme', 'kinship2','R.utils','Rdpack'))
 ```
 Note: if you are asked to update packages, then press "a" for all.
 
