@@ -25,12 +25,10 @@ An example is provided at https://github.com/adele/FamilyBasedPGMs/blob/master/v
 First, install the following R packages:
 
 ```r
-source("https://bioconductor.org/biocLite.R")
-
-# The following packages must be installed together with RGBL
-biocLite("graph")
-biocLite("RBGL")
-biocLite("Rgraphviz")
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install()
+BiocManager::install(c("graph", "RBGL", "Rgraphviz"))
 
 install.packages(c("stringi", "curl", "pcalg"), dependencies=TRUE)
 ```
