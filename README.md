@@ -32,7 +32,7 @@ biocLite("graph")
 biocLite("RBGL")
 biocLite("Rgraphviz")
 
-install.packages(c("curl", "pcalg"), dependencies=TRUE)
+install.packages(c("stringi", "curl", "pcalg"), dependencies=TRUE)
 ```
 Note: if you are asked to update packages, then press "a" for all.
 
