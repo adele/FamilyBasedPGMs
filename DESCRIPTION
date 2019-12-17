@@ -1,7 +1,7 @@
 Package: FamilyBasedPGMs
 Type: Package
 Title: Methods for Learning Genetic and Environmental Graphical Models from Family Data
-Version: 1.0
+Version: 2.0
 Author: Adèle Helena Ribeiro
 Maintainer: Adèle Helena Ribeiro <adele@ime.usp.br>
 Description: This package provides methods for learning, from observational Gaussian family data (i.e., Gaussian data clusterized in families), Gaussian undirected and directed acyclic PGMs describing linear relationships among multiple phenotypes and a decomposition of the learned PGM into unconfounded genetic and environmental PGMs.
@@ -19,3 +19,4 @@ Suggests:
 RdMacros: Rdpack
 RoxygenNote: 6.1.1
 VignetteBuilder: knitr
+Depends: R (>= 3.5.0)

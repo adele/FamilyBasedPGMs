@@ -120,3 +120,34 @@
 #' }
 "scen4"
 
+#' Simulated Data - Scenario 5
+#'
+#' It contains 100 replicates of data simulated according to scenario 5, as described
+#' in \insertCite{ribeiro2019family}{FamilyBasedPGMs}.
+#'
+#' In this scenario, the true DAG in the total, genetic, and environmental components is
+#' \eqn{X \rightarrow Z \leftarrow U \rightarrow W \leftarrow Y}{X -> Z <- U -> W <- Y}.
+#' Since U is hidden, the true MAG is \eqn{X \rightarrow Z \leftrightarrow W \leftarrow Y}{X -> Z <-> W <- Y}.
+#'
+#' It was simulated pedigrees for 30 families, each with 30 individuals (N = 900).
+#'
+#' The same pedigrees were used for simulating 100 replicates of family data for five Gaussian phenotypes,
+#' namely X, Y, Z, W, and U. No covariates were used in the simulation.
+#'
+#' @format A list with the following elements:
+#' \describe{
+#' \item{pedigrees}{A data.frame representing the pedigrees of all simulated families. It contains the
+#' columuns \code{famid}, \code{id}, \code{dadid}, \code{momid}, and \code{sex}.}
+#' \item{fam.nf}{A integer vector where the entry i indicates the number of individuals at family i.}
+#' \item{phen.nf}{A list of size 100 in which each element represents a data.frame with the values of the
+#' phenotypes X, Y, and Z for all 900 individuals.}
+#' }
+#'
+#' @examples
+#' data(scen5)
+#'
+#' @references{
+#'    \insertAllCited
+#' }
+"scen5"
+

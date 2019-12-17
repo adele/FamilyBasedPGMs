@@ -45,30 +45,29 @@ fixNonPositiveDefiniteMatrix <- function(origMat) {
 # Generating the dataset #
 ##########################
 
+computeSinglePhenotype <- function(Phi_list, fam.nf, phen.mu, phen.var_g, phen.var_e) {
+  phen_df <- c()
+  for (f in 1:length(fam.nf)) {
+    if (f == 1) {
+      firstIdx = 1
+    } else {
+      firstIdx = sum(fam.nf[1:(f-1)]) + 1
+    }
+    lastIdx = firstIdx + fam.nf[f] - 1
+
+    CovYf <- kronecker(2*Phi_list[[f]], phen.var_g) + kronecker(diag(1,fam.nf[f]), phen.var_e)
+    Sigma_f = fixNonPositiveDefiniteMatrix(CovYf)
+    phen_f <- mvrnorm(1, mu=phen.mu[firstIdx:lastIdx], Sigma=Sigma_f)
+    phen_f <- matrix(phen_f, byrow=T, ncol=1)
+    phen_df <- rbind(phen_df, phen_f)
+  }
+  return(phen_df)
+}
+
 #' @importFrom MASS mvrnorm
 generateFamilyDependentSEM <- function(betayx, betazx.y, betazy.x,
   varx_g, varx_e, vary.x_g, vary.x_e, varz.xy_g, varz.xy_e,
   fam.nf, pedigrees) {
-
-  computeSinglePhenotype <- function(Phi_list, fam.nf, phen.mu, phen.var_g, phen.var_e) {
-    phen_df <- c()
-    for (f in 1:length(fam.nf)) {
-      if (f == 1) {
-        firstIdx = 1
-      } else {
-        firstIdx = sum(fam.nf[1:(f-1)]) + 1
-      }
-      lastIdx = firstIdx + fam.nf[f] - 1
-
-      CovYf <- kronecker(2*Phi_list[[f]], phen.var_g) + kronecker(diag(1,fam.nf[f]), phen.var_e)
-      Sigma_f = fixNonPositiveDefiniteMatrix(CovYf)
-      phen_f <- mvrnorm(1, mu=phen.mu[firstIdx:lastIdx], Sigma=Sigma_f)
-      phen_f <- matrix(phen_f, byrow=T, ncol=1)
-      phen_df <- rbind(phen_df, phen_f)
-    }
-    return(phen_df)
-  }
-
   Phi_list <- getKinshipList(pedigrees)
 
   N <- sum(fam.nf)
@@ -84,17 +83,197 @@ generateFamilyDependentSEM <- function(betayx, betazx.y, betazy.x,
   return(data.frame(X=X, Y=Y, Z=Z))
 }
 
+generateFamilyDependentFCI_SEM <- function(betazx.u, betazu.x, betawy.u, betawu.y,
+                                           varx_g, varx_e, varu_g, varu_e, vary_g, vary_e,
+                                           varz.xu_g, varz.xu_e, varw.yu_g, varw.yu_e,
+                                           fam.nf, pedigrees) {
+  Phi_list <- getKinshipList(pedigrees)
+
+  N <- sum(fam.nf)
+
+  muX <- rep(0, N) # as.numeric(kronecker(rep(1, nf), phen.mu0))
+  X <- computeSinglePhenotype(Phi_list, fam.nf, muX, varx_g, varx_e)
+
+  muU <- rep(0, N) # as.numeric(kronecker(rep(1, nf), phen.mu0))
+  U <- computeSinglePhenotype(Phi_list, fam.nf, muU, varu_g, varu_e)
+
+  muY <- rep(0, N) # as.numeric(kronecker(rep(1, nf), phen.mu0))
+  Y <- computeSinglePhenotype(Phi_list, fam.nf, muY, vary_g, vary_e)
+
+  muZ.XU <- betazx.u * X + betazu.x * U
+  Z <- computeSinglePhenotype(Phi_list, fam.nf, muZ.XU, varz.xu_g, varz.xu_e)
+
+  muW.YU <- betawy.u * Y + betawu.y * U
+  W <- computeSinglePhenotype(Phi_list, fam.nf, muW.YU, varw.yu_g, varw.yu_e)
+
+  return(data.frame(X=X, Y=Y, Z=Z, W=W, U=U))
+}
+
 getScenarioParametersFromList <- function(parametersTable, rowId) {
   betayx <- parametersTable[rowId, 1]
   betazx.y <- parametersTable[rowId, 2]
   betazy.x <- parametersTable[rowId, 3]
   varx_g <- parametersTable[rowId, 4]
   varx_e <- parametersTable[rowId, 5]
-  vary.x_g <- parametersTable[rowId, 6]
+  vary.x_g <- parametersTable[rowId=6]
   vary.x_e <- parametersTable[rowId, 7]
   varz.xy_g <- parametersTable[rowId, 8]
   varz.xy_e <- parametersTable[rowId, 9]
 }
+
+
+getFCIScenarioParameters <- function(scenario) {
+  if (scenario == 1) {
+
+    betazx.u = 0.75
+    betazu.x = 0.80
+    betawy.u = 0.75
+    betawu.y = 0.80
+    varx_g = 0.875
+    varx_e = 0.250
+    varu_g = 0.425
+    varu_e = 0.625
+    vary_g = 0.875
+    vary_e = 0.250
+    varz.xu_g = 0.250
+    varz.xu_e = 0.275
+    varw.yu_g = 0.250
+    varw.yu_e = 0.275
+  }
+
+  varx = varx_g + varx_e
+  varu = varu_g + varu_e
+  vary = vary_g + vary_e
+
+  varz.xu <- varz.xu_g + varz.xu_e
+  varz_g = betazx.u^2 * varx_g + betazu.x^2 * varu_g + varz.xu_g
+  varz_e = betazx.u^2 * varx_e + betazu.x^2 * varu_e + varz.xu_e
+  varz = varz_g + varz_e
+
+  varw.yu <- varw.yu_g + varw.yu_e
+  varw_g = betawy.u^2 * vary_g + betawu.y^2 * varu_g + varw.yu_g
+  varw_e = betawy.u^2 * vary_e + betawu.y^2 * varu_e + varw.yu_e
+  varw = varw_g + varw_e
+
+  covxz = betazx.u * (varx_g + varx_e)
+  covxz_g = betazx.u * (varx_g)
+  covxz_e = betazx.u * (varx_e)
+
+  rhoxz = covxz/(sqrt(varx)*sqrt(varz))
+  rhoxz_g = covxz_g/(sqrt(varx_g)*sqrt(varz_g))
+  rhoxz_e = covxz_e/(sqrt(varx_e)*sqrt(varz_e))
+
+  covzw = betazu.x * betawu.y * (varu_g + varu_e)
+  covzw_g = betazu.x * betawu.y * (varu_g)
+  covzw_e = betazu.x * betawu.y * (varu_e)
+
+  rhozw = covzw/(sqrt(varz)*sqrt(varw))
+  rhozw_g = covzw_g/(sqrt(varz_g)*sqrt(varw_g))
+  rhozw_e = covzw_e/(sqrt(varz_e)*sqrt(varw_e))
+
+  covzu = betazu.x * (varu_g + varu_e)
+  covzu_g = betazu.x * (varu_g)
+  covzu_e = betazu.x * (varu_e)
+
+  rhozu = covzu/(sqrt(varz)*sqrt(varu))
+  rhozu_g = covzu_g/(sqrt(varz_g)*sqrt(varu_g))
+  rhozu_e = covzu_e/(sqrt(varz_e)*sqrt(varu_e))
+
+  covuw = betawu.y * (varu_g + varu_e)
+  covuw_g = betawu.y * (varu_g)
+  covuw_e = betawu.y * (varu_e)
+
+  rhouw = covuw/(sqrt(varu)*sqrt(varw))
+  rhouw_g = covuw_g/(sqrt(varu_g)*sqrt(varw_g))
+  rhouw_e = covuw_e/(sqrt(varu_e)*sqrt(varw_e))
+
+  covwy = betawy.u * (vary_g + vary_e)
+  covwy_g = betawy.u * (vary_g)
+  covwy_e = betawy.u * (vary_e)
+
+  rhowy = covwy/(sqrt(varw)*sqrt(vary))
+  rhowy_g = covwy_g/(sqrt(varw_g)*sqrt(vary_g))
+  rhowy_e = covwy_e/(sqrt(varw_e)*sqrt(vary_e))
+
+  betaxz = covxz/varz
+  betauz = covzu/varz
+  betauw = covuw/varw
+  betayw = covwy/varw
+  betawz = covzw/varz
+  betazw = covzw/varw
+
+  covwx.z = - betaxz * covzw - betawz * covxz + betawz * betaxz * varz
+  covwx.z_g = - betaxz * covzw_g - betawz * covxz_g + betawz * betaxz * varz_g
+  covwx.z_e = - betaxz * covzw_e - betawz * covxz_e + betawz * betaxz * varz_e
+
+  covux.z = - betaxz * covzu - betauz * covxz + betauz * betaxz * varz
+  covux.z_g = - betaxz * covzu_g - betauz * covxz_g + betauz * betaxz * varz_g
+  covux.z_e = - betaxz * covzu_e - betauz * covxz_e + betauz * betaxz * varz_e
+
+  varx.z = varx - 2 * betaxz * covxz + betaxz^2 * varz
+  varx.z_g = varx_g - 2 * betaxz * covxz_g + betaxz^2 * varz_g
+  varx.z_e = varx_e - 2 * betaxz * covxz_e + betaxz^2 * varz_e
+
+  varu.z = varu - 2* betauz * covzu + betauz^2 * varz
+  varu.z_g = varu_g - 2* betauz * covzu_g + betauz^2 * varz_g
+  varu.z_e = varu_e - 2* betauz * covzu_e + betauz^2 * varz_e
+
+  varw.z = varw - 2* betawz * covzw + betawz^2 * varz
+  varw.z_g = varw_g - 2* betawz * covzw_g + betawz^2 * varz_g
+  varw.z_e = varw_e - 2* betawz * covzw_e + betawz^2 * varz_e
+
+
+  rhoux.z = covux.z/(sqrt(varx.z) * sqrt(varu.z))
+  rhoux.z_g = covux.z_g/(sqrt(varx.z_g) * sqrt(varu.z_g))
+  rhoux.z_e = covux.z_e/(sqrt(varx.z_e) * sqrt(varu.z_e))
+
+  covuy.w = - betayw * covuw - betauw * covwy + betauw * betayw * varw
+  covuy.w_g = - betayw * covuw_g - betauw * covwy_g + betauw * betayw * varw_g
+  covuy.w_e = - betayw * covuw_e - betauw * covwy_e + betauw * betayw * varw_e
+
+  covzy.w = - betayw * covzw - betazw * covwy + betazw * betayw * varw
+  covzy.w_g = - betayw * covzw_g - betazw * covwy_g + betazw * betayw * varw_g
+  covzy.w_e = - betayw * covzw_e - betazw * covwy_e + betazw * betayw * varw_e
+
+  varu.w = varu - 2* betauw * covuw + betauw^2 * varw
+  varu.w_g = varu_g - 2* betauw * covuw_g + betauw^2 * varw_g
+  varu.w_e = varu_e - 2* betauw * covuw_e + betauw^2 * varw_e
+
+  varz.w = varz - 2* betazw * covzw + betazw^2 * varw
+  varz.w_g = varz_g - 2* betazw * covzw_g + betazw^2 * varw_g
+  varz.w_e = varz_e - 2* betazw * covzw_e + betazw^2 * varw_e
+
+  vary.w = vary - 2* betayw * covwy + betayw^2 * varw
+  vary.w_g = vary_g - 2* betayw * covwy_g + betayw^2 * varw_g
+  vary.w_e = vary_e - 2* betayw * covwy_e + betayw^2 * varw_e
+
+  rhouy.w = covuy.w/(sqrt(vary.w) * sqrt(varu.w))
+  rhouy.w_g = covuy.w_g/(sqrt(vary.w_g) * sqrt(varu.w_g))
+  rhouy.w_e = covuy.w_e/(sqrt(vary.w_e) * sqrt(varu.w_e))
+
+  rhozy.w = covzy.w/(sqrt(vary.w) * sqrt(varz.w))
+  rhozy.w_g = covzy.w_g/(sqrt(vary.w_g) * sqrt(varz.w_g))
+  rhozy.w_e = covzy.w_e/(sqrt(vary.w_e) * sqrt(varz.w_e))
+
+  rhowx.z = covwx.z/(sqrt(varx.z) * sqrt(varw.z))
+  rhowx.z_g = covwx.z_g/(sqrt(varx.z_g) * sqrt(varw.z_g))
+  rhowx.z_e = covwx.z_e/(sqrt(varx.z_e) * sqrt(varw.z_e))
+
+  return(list(betazx.u=betazx.u, betazu.x=betazu.x, betawy.u=betawy.u, betawu.y=betawu.y,
+              varx_g=varx_g, varx_e=varx_e, varu_g=varu_g, varu_e=varu_e, vary_g=vary_g, vary_e=vary_e,
+              varz.xu_g=varz.xu_g, varz.xu_e=varz.xu_e, varw.yu_g=varw.yu_g, varw.yu_e=varw.yu_e,
+              rhoxz=rhoxz, rhoxz_g=rhoxz_g, rhoxz_e=rhoxz_e, #rho(X,Z)
+              rhozu=rhozu, rhozu_g=rhozu_g, rhozu_e=rhozu_e,
+              rhouw=rhouw, rhouw_g=rhouw_g, rhouw_e=rhouw_e,
+              rhowy=rhowy, rhowy_g=rhowy_g, rhowy_e=rhowy_e, #rho(W,Y)
+              rhowx.z=rhowx.z, rhowx.z_g=rhowx.z_g, rhowx.z_e=rhowx.z_e,
+              rhoux.z=rhoux.z, rhoux.z_g=rhoux.z_g, rhoux.z_e=rhoux.z_e,
+              rhouy.w=rhouy.w, rhouy.w_g=rhouy.w_g, rhouy.w_e=rhouy.w_e,
+              rhozy.w=rhozy.w, rhozy.w_g=rhozy.w_g, rhozy.w_e=rhozy.w_e,
+              rhozw=rhozw, rhozw_g=rhozw_g, rhozw_e=rhozw_e) #rho(Z,W)
+         )
+}
+
 
 getScenarioParameters <- function(scenario) {
   if (scenario == 1) {

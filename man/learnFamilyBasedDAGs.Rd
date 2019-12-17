@@ -6,8 +6,9 @@
 \usage{
 learnFamilyBasedDAGs(phen.df, covs.df, pedigrees, sampled, fileID,
   dirToSave, alpha = 0.05, max_cores = NULL, minK = 10,
-  maxFC = 0.01, orthogonal = TRUE, maj.rule = TRUE, useGPU = FALSE,
-  debug = TRUE, savePlots = FALSE)
+  maxFC = 0.01, orthogonal = TRUE, hidden_vars = FALSE,
+  maj.rule = TRUE, useGPU = FALSE, debug = TRUE, savePlots = FALSE,
+  logFile = NULL)
 }
 \arguments{
 \item{phen.df}{A data.frame with phenotype variables of only sampled subjects.
@@ -41,7 +42,11 @@ confounding allowed.}
 \item{orthogonal}{A logical value indicating whether the transformation matrix used in the
 confounding correction is orthogonal or not.}
 
-\item{maj.rule}{A logical value to be used in the \code{pc} function indicating wheter the
+\item{hidden_vars}{A logical value indicating if the causal structure learning method should
+account for hidden variables. The \code{rfci} algorithm is used if hidden_vars is \code{TRUE} and
+the \code{pc} algorithm is used otherwise.}
+
+\item{maj.rule}{A logical value to be used in the \code{skeleton} function, indicating whether the
 majority rule must be applied or not.}
 
 \item{useGPU}{A logical value indicating whether GPU cores can be used for parallel execution.}
@@ -49,6 +54,9 @@ majority rule must be applied or not.}
 \item{debug}{A logical value indicating whether some debug messages can be shown.}
 
 \item{savePlots}{A logical value indicating whether plots for the confounding correction must be generated.}
+
+\item{logFile}{Optional file path and name to save progress and error messages.
+If not provided and debug is True a default file is created in the dirToSave folder.}
 }
 \value{
 Returns a list with the partial correlation matrices (\code{pcor}), the
@@ -91,7 +99,8 @@ alpha = 0.05
 
 dags <- learnFamilyBasedDAGs(phen.df, covs.df, pedigrees, sampled,
                              fileID, dirToSave, alpha, max_cores=NULL,
-                             minK=10, maxFC = 0.05, orthogonal=TRUE, maj.rule=TRUE,
+                             minK=10, maxFC = 0.05, orthogonal=TRUE,
+                             hidden_vars=FALSE, maj.rule=TRUE,
                              useGPU=FALSE, debug=TRUE, savePlots=FALSE)
 
 # the adjacency matrix of the learned directed acyclic genetic PGM

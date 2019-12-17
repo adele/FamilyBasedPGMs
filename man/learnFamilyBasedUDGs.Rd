@@ -7,7 +7,7 @@
 learnFamilyBasedUDGs(phen.df, covs.df, pedigrees, sampled, fileID,
   dirToSave, alpha = 0.05, correction = NULL, max_cores = NULL,
   minK = 10, maxFC = 0.01, orthogonal = TRUE, useGPU = FALSE,
-  debug = TRUE)
+  debug = TRUE, logFile = NULL)
 }
 \arguments{
 \item{phen.df}{A data.frame with phenotype variables of only sampled subjects.
@@ -48,6 +48,9 @@ confounding correction is orthogonal or not.}
 \item{useGPU}{A logical value indicating whether GPU cores can be used for parallel execution.}
 
 \item{debug}{A logical value indicating whether some debug messages can be shown.}
+
+\item{logFile}{Optional file path and name to save progress and error messages.
+If not provided and debug is True a default file is created in the dirToSave folder.}
 }
 \value{
 Returns a list with the following elements:

@@ -20,7 +20,7 @@ An example is provided at https://github.com/adele/FamilyBasedPGMs/blob/master/v
 
 ### Installation
 
-First, install the following R packages:
+First, install R (>= 3.5.0) and the following packages:
 ```r
 install.packages(c("curl", "pcalg"), dependencies=TRUE)
 ```
@@ -40,9 +40,9 @@ devtools::install_github("adele/FamilyBasedPGMs", dependencies=TRUE)
 ```
 Note: if you are asked to update packages, then press "a" for all.
 
-All releases are available at https://github.com/adele/FamilyBasedPGMs/releases. If you want a specific version of the FamilyBasedPGMs R package, for example, v1.0, you can install it directly from the URL:
+All releases are available at https://github.com/adele/FamilyBasedPGMs/releases. If you want a specific version of the FamilyBasedPGMs R package, for example, v2.0, you can install it directly from the URL:
 ```r
-install.packages("https://github.com/adele/FamilyBasedPGMs/releases/download/v1.0/FamilyBasedPGMs_1.0.tar.gz", repos=NULL, method="libcurl", dependencies=TRUE)
+install.packages("https://github.com/adele/FamilyBasedPGMs/releases/download/v2.0/FamilyBasedPGMs_2.0.tar.gz", repos=NULL, method="libcurl", dependencies=TRUE)
 ```
 
 ### Installation Trobleshooting on Debian and Ubuntu

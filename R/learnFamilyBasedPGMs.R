@@ -37,6 +37,8 @@
 #' confounding correction is orthogonal or not.
 #' @param useGPU A logical value indicating whether GPU cores can be used for parallel execution.
 #' @param debug A logical value indicating whether some debug messages can be shown.
+#' @param logFile Optional file path and name to save progress and error messages.
+#' If not provided and debug is True a default file is created in the dirToSave folder.
 #'
 #' @return Returns a list with the following elements:
 #' \describe{
@@ -96,16 +98,29 @@
 #' }
 #'
 #' @importFrom Rdpack reprompt
+#' @import doMC
+#' @import foreach
+#' @importFrom utils combn
+#' @importFrom parallel detectCores
 #'
 #' @export learnFamilyBasedUDGs
 learnFamilyBasedUDGs <- function(phen.df, covs.df, pedigrees, sampled, fileID, dirToSave,
                                  alpha=0.05, correction=NULL, max_cores=NULL,
-                                 minK=10, maxFC = 0.01, orthogonal=TRUE, useGPU=FALSE, debug=TRUE)
+                                 minK=10, maxFC = 0.01, orthogonal=TRUE, useGPU=FALSE,
+                                 debug=TRUE, logFile=NULL)
 {
-  preprocessFamilyBasedUDGs(phen.df, covs.df, pedigrees, sampled, fileID, dirToSave, max_cores, minK, maxFC, orthogonal, useGPU, debug)
+  if (debug && is.null(logFile)){
+    logFile = paste0(dirToSave, "learnFamilyBasedUDGs_", format(Sys.time(), "%Y%m%d-%Hh%Mm%Ss"), ".log")
+    cat("Learning UDGs from Family Data...\n", file=logFile, append=FALSE)
+  }
+
+  preprocessFamilyBasedUDGs(phen.df, covs.df, pedigrees, sampled, fileID, dirToSave,
+                            max_cores, minK, maxFC, orthogonal, useGPU,
+                            debug, logFile)
 
   udgPCorM <- selectBestUDGPCorMatrices(dim(phen.df)[2], alpha, maxFC, fileID, dirToSave,
-                                        savePlots=TRUE, variables=colnames(phen.df), debug=debug)
+                                        savePlots=TRUE, variables=colnames(phen.df),
+                                        debug=debug, logFile=logFile)
 
   adjMatrices <- list()
   adjMatrices$g <- getAdjMatrixFromSymmetricPCor(udgPCorM$pCor_g, alpha, correction)$adjacency.matrix
@@ -157,11 +172,16 @@ learnFamilyBasedUDGs <- function(phen.df, covs.df, pedigrees, sampled, fileID, d
 #' confounding allowed.
 #' @param orthogonal A logical value indicating whether the transformation matrix used in the
 #' confounding correction is orthogonal or not.
-#' @param maj.rule A logical value to be used in the \code{pc} function indicating wheter the
+#' @param hidden_vars A logical value indicating if the causal structure learning method should
+#' account for hidden variables. The \code{rfci} algorithm is used if hidden_vars is \code{TRUE} and
+#' the \code{pc} algorithm is used otherwise.
+#' @param maj.rule A logical value to be used in the \code{skeleton} function, indicating whether the
 #' majority rule must be applied or not.
 #' @param useGPU A logical value indicating whether GPU cores can be used for parallel execution.
 #' @param debug A logical value indicating whether some debug messages can be shown.
 #' @param savePlots A logical value indicating whether plots for the confounding correction must be generated.
+#' @param logFile Optional file path and name to save progress and error messages.
+#' If not provided and debug is True a default file is created in the dirToSave folder.
 #'
 #' @return Returns a list with the partial correlation matrices (\code{pcor}), the
 #' adjacency matrices (\code{adjM}), and with the igraph objects representing the
@@ -189,7 +209,8 @@ learnFamilyBasedUDGs <- function(phen.df, covs.df, pedigrees, sampled, fileID, d
 #'
 #' dags <- learnFamilyBasedDAGs(phen.df, covs.df, pedigrees, sampled,
 #'                              fileID, dirToSave, alpha, max_cores=NULL,
-#'                              minK=10, maxFC = 0.05, orthogonal=TRUE, maj.rule=TRUE,
+#'                              minK=10, maxFC = 0.05, orthogonal=TRUE,
+#'                              hidden_vars=FALSE, maj.rule=TRUE,
 #'                              useGPU=FALSE, debug=TRUE, savePlots=FALSE)
 #'
 #' # the adjacency matrix of the learned directed acyclic genetic PGM
@@ -215,8 +236,12 @@ learnFamilyBasedUDGs <- function(phen.df, covs.df, pedigrees, sampled, fileID, d
 #'
 #'@export learnFamilyBasedDAGs
 learnFamilyBasedDAGs <- function(phen.df, covs.df, pedigrees, sampled, fileID, dirToSave, alpha=0.05,
-                                 max_cores=NULL, minK=10, maxFC = 0.01, orthogonal=TRUE, maj.rule=TRUE,
-                                 useGPU=FALSE, debug=TRUE, savePlots=FALSE) {
+                                 max_cores=NULL, minK=10, maxFC = 0.01, orthogonal=TRUE, hidden_vars=FALSE,
+                                 maj.rule=TRUE, useGPU=FALSE, debug=TRUE, savePlots=FALSE, logFile=NULL) {
+  if (debug && is.null(logFile)){
+    logFile = paste0(dirToSave, "learnFamilyBasedDAGs_", format(Sys.time(), "%Y%m%d-%Hh%Mm%Ss"), ".log")
+    cat("Learning DAGs from Family Data...\n", file=logFile, append=FALSE)
+  }
 
   preprocessedPvaluesCSVFile <- paste0(dirToSave, fileID, "_preprPvalues.csv")
 
@@ -224,7 +249,8 @@ learnFamilyBasedDAGs <- function(phen.df, covs.df, pedigrees, sampled, fileID, d
       pedigrees, sampled, alpha,
       fileID, dirToSave, preprocessedPvaluesCSVFile,
       max_cores=max_cores, minK=minK, maxFC = maxFC,
-      orthogonal=orthogonal, savePlots=savePlots, useGPU=useGPU, debug=debug)
+      orthogonal=orthogonal, savePlots=savePlots, useGPU=useGPU,
+      debug=debug, logFile=logFile)
 
   if (is.null(max_cores)) {
     max_cores <- detectCores()
@@ -234,9 +260,9 @@ learnFamilyBasedDAGs <- function(phen.df, covs.df, pedigrees, sampled, fileID, d
   type = "" # a hack to avoid problems when checking --as-cran
   dags <- foreach(type = c("g","e", "t")) %dopar% {
     generateFamilyDAG(phen.df, covs.df, pedigrees, sampled,
-      preprocessedPvaluesCSVFile, type, alpha, maj.rule=maj.rule,
-      minK=minK, maxFC = maxFC, orthogonal=orthogonal,
-      dirToSave, fileID, savePlots=savePlots, useGPU=useGPU, debug=debug)
+                      preprocessedPvaluesCSVFile, type, alpha, hidden_vars=hidden_vars, maj.rule=maj.rule,
+                      minK=minK, maxFC = maxFC, orthogonal=orthogonal,
+                      dirToSave, fileID, savePlots=savePlots, useGPU=useGPU, debug=debug, logFile=logFile)
   }
   names(dags) <- c("g","e", "t")
   save(dags, file=paste0(dirToSave, fileID, "_dags.RData"))
